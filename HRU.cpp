@@ -45,9 +45,13 @@ int main()
 			PrintHelp();
 		}
 		else if (input == "CreateUser") {
-			string login;
+			string login, password;
+			cout << "Введите ваш логин." << endl;
+			cin >> login;
+			cout << "Введите ваш пароль." << endl;
+			cin >> password;
 
-			if (model.CheckUser()) {
+			if (model.CheckUser(login, password)) {
 
 				cout << "Введите логин нового пользователя." << endl;
 				cin >> input;
