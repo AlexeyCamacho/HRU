@@ -1,2 +1,11 @@
-﻿  HRU.cpp
+﻿  ModelHRU.cpp
+D:\Programmig\C++\HRU\ModelHRU.cpp(93,30): warning C4267: return: преобразование из "size_t" в "int"; возможна потеря данных
+D:\Programmig\C++\HRU\ModelHRU.cpp(105,17): warning C4244: =: преобразование "__int64" в "int", возможна потеря данных
+D:\Programmig\C++\HRU\ModelHRU.cpp(108,17): warning C4244: =: преобразование "__int64" в "int", возможна потеря данных
+D:\Programmig\C++\HRU\ModelHRU.cpp(121,17): warning C4244: =: преобразование "__int64" в "int", возможна потеря данных
+D:\Programmig\C++\HRU\ModelHRU.cpp(124,17): warning C4244: =: преобразование "__int64" в "int", возможна потеря данных
+D:\Programmig\C++\HRU\ModelHRU.cpp(151,17): warning C4244: =: преобразование "__int64" в "int", возможна потеря данных
+D:\Programmig\C++\HRU\ModelHRU.cpp(154,17): warning C4244: =: преобразование "__int64" в "int", возможна потеря данных
+D:\Programmig\C++\HRU\ModelHRU.cpp(221,25): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+D:\Programmig\C++\HRU\ModelHRU.cpp(239,17): warning C4244: =: преобразование "__int64" в "int", возможна потеря данных
   HRU.vcxproj -> D:\Programmig\C++\HRU\x64\Debug\HRU.exe

@@ -61,9 +61,6 @@ int main()
 					cout << "Пользователь с таким логином уже существует." << endl;
 				}
 			}
-			else {
-				cout << "Неверный логин или пароль." << endl;
-			}
 		}
 		else if (input == "CreateFile") {
 			string login = model.Authentication();
@@ -85,9 +82,6 @@ int main()
 					cout << "Файл с таким именем уже существует." << endl;
 				}
 			}
-			else {
-				cout << "Неверный логин или пароль." << endl;
-			}
 		}
 		else if (input == "ReadFile") {
 			string login = model.Authentication();
@@ -98,7 +92,7 @@ int main()
 				cin >> file;
 
 				int perm = model.GetPermission(login, file);
-				if (model.CheckUser(login)) {
+				if (perm >= 0) {
 					if (perm & (1 << 2)) {
 						model.ReadFile(file);
 					}
@@ -120,7 +114,7 @@ int main()
 				cin >> file;
 
 				int perm = model.GetPermission(login, file);
-				if (model.CheckUser(login)) {
+				if (perm >= 0) {
 					if (perm & (1 << 1)) {
 						cout << "Введите текст." << endl;
 						cin >> text;
@@ -149,7 +143,7 @@ int main()
 				cin >> otherUser;
 
 				int perm = model.GetPermission(login, file);
-				if (model.CheckUser(login)) {
+				if (perm >= 0) {
 					if (perm & 1) {
 						if (model.CheckUser(otherUser)) {
 							if (model.SetPermission(otherUser, file, flag)) { cout << "Успешно." << endl; }
@@ -181,7 +175,7 @@ int main()
 				cin >> otherUser;
 
 				int perm = model.GetPermission(login, file);
-				if (model.CheckUser(login)) {
+				if (perm >= 0) {
 					if (perm & 1) {
 						if (model.CheckUser(otherUser)) {
 							if (model.DelPermission(otherUser, file, flag)) { cout << "Успешно." << endl; }
@@ -201,7 +195,26 @@ int main()
 			}
 		}
 		else if (input == "DelFile") {
-			
+			string login = model.Authentication();
+
+			if (login != "") {
+				string file;
+				cout << "Введите имя файла для удаления." << endl;
+				cin >> file;
+
+				int perm = model.GetPermission(login, file);
+				if (perm >= 0) {
+					if (perm & 1) {
+						if(model.DeleteFile(file)) { cout << "Файл удалён." << endl; }
+					}
+					else {
+						cout << "Недостаточно прав." << endl;
+					}
+				}
+				else {
+					cout << "Файл не найден." << endl;
+				}
+			}
 		}
 		else {
 			cout << "Неверная команда." << endl;

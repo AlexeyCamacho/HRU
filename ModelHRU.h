@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <direct.h>
 #include "MD5.h"
 #include "Function.h"
 

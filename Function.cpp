@@ -25,4 +25,6 @@ void PrintHelp()
     cout << "WriteFile" << endl;
     cout << "AddPerm" << endl;
     cout << "DelPerm" << endl;
+    cout << "DelFile" << endl;
+    cout << "DelUser" << endl;
 }

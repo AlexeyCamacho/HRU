@@ -2,6 +2,10 @@
 
 ModelHRU::ModelHRU()
 {
+
+    int result;
+    result = _mkdir("model");
+
     string input;
 	ifstream usersFile("model/users.txt");
     if (usersFile.is_open()) {
@@ -175,7 +179,6 @@ int ModelHRU::CreateUser(string login, string password)
     }
     else {
         return 0;
-
     }
     
     vector<vector<int>>::iterator it1;
@@ -200,6 +203,7 @@ string ModelHRU::Authentication()
         return login;
     }
     else {
+        cout << "Неверный логин или пароль." << endl;
         return "";
     }
 }
@@ -224,6 +228,17 @@ int ModelHRU::CreateFile(string name, string text)
     file << text;
 
     file.close();
+
+    return 1;
+}
+
+int ModelHRU::DeleteFile(string name)
+{
+    int i;
+    vector<string>::iterator it = find(files.begin(), files.end(), name);
+    i = distance(files.begin(), it);
+    files.erase(it);
+    accessMatrix.erase(accessMatrix.begin() + i);
 
     return 1;
 }
