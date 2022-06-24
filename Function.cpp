@@ -21,4 +21,8 @@ void PrintHelp()
     cout << "exit" << endl;
     cout << "CreateUser" << endl;
     cout << "CreateFile" << endl;
+    cout << "ReadFile" << endl;
+    cout << "WriteFile" << endl;
+    cout << "AddPerm" << endl;
+    cout << "DelPerm" << endl;
 }

@@ -1,8 +1,2 @@
-﻿  Function.cpp
-  HRU.cpp
-  MD5.cpp
-D:\Programmig\C++\HRU\MD5.cpp(116,36): warning C4267: аргумент: преобразование из "size_t" в "MD5::size_type"; возможна потеря данных
-  ModelHRU.cpp
-D:\Programmig\C++\HRU\ModelHRU.cpp(56,30): warning C4267: return: преобразование из "size_t" в "int"; возможна потеря данных
-  Создание кода...
+﻿  HRU.cpp
   HRU.vcxproj -> D:\Programmig\C++\HRU\x64\Debug\HRU.exe

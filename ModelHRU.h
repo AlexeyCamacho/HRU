@@ -18,14 +18,16 @@ public:
 	ModelHRU();
 	void save();
 	int GetSizeUsers();
-	int GetPermission(int i, int j);
-	int SetPermission(int i, int j);
+	int GetPermission(string login, string file);
+	int SetPermission(string login, string file, string flag);
+	int DelPermission(string login, string file, string flag);
 	int CreateUser(string login, string password);
 	int DeleteUser(string login);
-	int CheckUser(string login, string password);
+	string Authentication();
 	int CreateFile(string name, string text);
 	int DeleteFile(string name);
 	int WriteFile(string name, string text);
-	string ReadFile(string name);
+	void ReadFile(string name);
+	int CheckUser(string login);
 };
 
