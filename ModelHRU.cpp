@@ -189,6 +189,20 @@ int ModelHRU::CreateUser(string login, string password)
     return 1;
 }
 
+int ModelHRU::DeleteUser(string login)
+{
+    int j;
+    auto it = find_if(users.begin(), users.end(), [login](pair<string, string>& current) { return current.first == login; });
+    j = distance(users.begin(), it);
+    users.erase(it);
+
+    for (int i = 0; i < accessMatrix.size(); i++) {
+        accessMatrix[i].erase(accessMatrix[i].begin() + j);
+    }
+
+    return 1;
+}
+
 string ModelHRU::Authentication()
 {
     string login, password;

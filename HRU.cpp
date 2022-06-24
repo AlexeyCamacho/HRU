@@ -216,6 +216,21 @@ int main()
 				}
 			}
 		}
+		else if (input == "DelUser") {
+		string login = model.Authentication();
+
+		if (login != "") {
+			string otherUser;
+			cout << "Введите логин пользователя для удаления." << endl;
+			cin >> otherUser;
+			if (model.CheckUser(otherUser)) {
+				if (model.DeleteUser(otherUser)) { cout << "Пользователь удалён." << endl; }
+			} 
+			else {
+				cout << "Пользователь не найден." << endl;
+			}
+		}
+		}
 		else {
 			cout << "Неверная команда." << endl;
 		}
