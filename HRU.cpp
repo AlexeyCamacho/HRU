@@ -29,6 +29,9 @@ int main()
 				cout << "Введите пароль начального пользователя." << endl;
 				cin >> input;
 				if (model.CreateUser(login, input)) {
+					model.SetPermission(login, login, "r", false);
+					model.SetPermission(login, login, "w", false);
+					model.SetPermission(login, login, "o", false);
 					cout << "Пользователь создан." << endl;
 				}
 				else {
@@ -50,11 +53,17 @@ int main()
 
 				cout << "Введите логин нового пользователя." << endl;
 				cin >> input;
-				login = input;
+				string otherLogin = input;
 				cout << "Введите пароль нового пользователя." << endl;
 				cin >> input;
 
-				if (model.CreateUser(login, input)) {
+				if (model.CreateUser(otherLogin, input)) {
+					model.SetPermission(otherLogin, otherLogin, "r", false);
+					model.SetPermission(otherLogin, otherLogin, "w", false);
+					model.SetPermission(otherLogin, otherLogin, "o", false);
+					model.SetPermission(login, otherLogin, "r", false);
+					model.SetPermission(login, otherLogin, "w", false);
+					model.SetPermission(login, otherLogin, "o", false);
 					cout << "Пользователь создан." << endl;
 				}
 				else {
@@ -73,9 +82,9 @@ int main()
 				cin >> text;
 
 				if (model.CreateFile(file, text)) {
-					model.SetPermission(login, file, "r");
-					model.SetPermission(login, file, "w");
-					model.SetPermission(login, file, "o");
+					model.SetPermission(login, file, "r", true);
+					model.SetPermission(login, file, "w", true);
+					model.SetPermission(login, file, "o", true);
 					cout << "Файл создан." << endl;
 				}
 				else {
@@ -91,8 +100,8 @@ int main()
 				cout << "Введите имя файла." << endl;
 				cin >> file;
 
-				int perm = model.GetPermission(login, file);
-				if (perm >= 0) {
+				if (model.CheckFile(file)) {
+					int perm = model.GetPermission(login, file, true);
 					if (perm & (1 << 2)) {
 						model.ReadFile(file);
 					}
@@ -113,8 +122,8 @@ int main()
 				cout << "Введите имя файла." << endl;
 				cin >> file;
 
-				int perm = model.GetPermission(login, file);
-				if (perm >= 0) {
+				if (model.CheckFile(file)) {
+					int perm = model.GetPermission(login, file, true);
 					if (perm & (1 << 1)) {
 						cout << "Введите текст." << endl;
 						cin >> text;
@@ -134,23 +143,31 @@ int main()
 			string login = model.Authentication();
 
 			if (login != "") {
-				string file, flag, otherUser;
-				cout << "Введите имя файла для выдачи прав." << endl;
-				cin >> file;
+				string object, flag, otherUser;
+				bool isFile = false;
+				cout << "Выдать права на файл или на пользователя? (user/file)" << endl;
+				cin >> object;
+
+				if (object == "file") {
+					isFile = true;
+				}
+
+				cout << "Введите имя файла/пользователя (объект) для выдачи прав." << endl;
+				cin >> object;
 				cout << "Введите право (r, w, o)." << endl;
 				cin >> flag;
-				cout << "Введите пользователя для выдачи прав." << endl;
+				cout << "Введите пользователя (субъект) для выдачи прав." << endl;
 				cin >> otherUser;
 
-				int perm = model.GetPermission(login, file);
-				if (perm >= 0) {
+				if ((!isFile && model.CheckUser(object)) || (isFile && model.CheckFile(object))) {
+					int perm = model.GetPermission(login, object, isFile);
 					if (perm & 1) {
 						if (model.CheckUser(otherUser)) {
-							if (model.SetPermission(otherUser, file, flag)) { cout << "Успешно." << endl; }
+							if (model.SetPermission(otherUser, object, flag, isFile)) { cout << "Успешно." << endl; }
 							else { cout << "Неверный флаг." << endl; }
 						}
 						else {
-							cout << "Пользователь не найден." << endl;
+							cout << "Субъект не найден." << endl;
 						}
 					}
 					else {
@@ -158,7 +175,7 @@ int main()
 					}
 				}
 				else {
-					cout << "Файл не найден." << endl;
+					cout << "Объект не найден." << endl;
 				}
 			}
 		}
@@ -166,23 +183,31 @@ int main()
 			string login = model.Authentication();
 
 			if (login != "") {
-				string file, flag, otherUser;
-				cout << "Введите имя файла для удаления прав." << endl;
-				cin >> file;
+				string object, flag, otherUser;
+				bool isFile = false;
+				cout << "Удалить права на файл или на пользователя? (user/file)" << endl;
+				cin >> object;
+
+				if (object == "file") {
+					isFile = true;
+				}
+
+				cout << "Введите имя файла/пользователя (объект) для удаления прав." << endl;
+				cin >> object;
 				cout << "Введите право (r, w, o)." << endl;
 				cin >> flag;
-				cout << "Введите пользователя для удаления прав." << endl;
+				cout << "Введите пользователя (субъект) для удаления прав." << endl;
 				cin >> otherUser;
 
-				int perm = model.GetPermission(login, file);
-				if (perm >= 0) {
+				if ((!isFile && model.CheckUser(object)) || (isFile && model.CheckFile(object))) {
+					int perm = model.GetPermission(login, object, isFile);
 					if (perm & 1) {
 						if (model.CheckUser(otherUser)) {
-							if (model.DelPermission(otherUser, file, flag)) { cout << "Успешно." << endl; }
+							if (model.DelPermission(otherUser, object, flag, isFile)) { cout << "Успешно." << endl; }
 							else { cout << "Неверный флаг." << endl; }
 						}
 						else {
-							cout << "Пользователь не найден." << endl;
+							cout << "Субъект не найден." << endl;
 						}
 					}
 					else {
@@ -190,7 +215,7 @@ int main()
 					}
 				}
 				else {
-					cout << "Файл не найден." << endl;
+					cout << "Объект не найден." << endl;
 				}
 			}
 		}
@@ -202,8 +227,8 @@ int main()
 				cout << "Введите имя файла для удаления." << endl;
 				cin >> file;
 
-				int perm = model.GetPermission(login, file);
-				if (perm >= 0) {
+				if (model.CheckFile(file)) {
+					int perm = model.GetPermission(login, file, true);
 					if (perm & 1) {
 						if(model.DeleteFile(file)) { cout << "Файл удалён." << endl; }
 					}
@@ -224,7 +249,13 @@ int main()
 			cout << "Введите логин пользователя для удаления." << endl;
 			cin >> otherUser;
 			if (model.CheckUser(otherUser)) {
-				if (model.DeleteUser(otherUser)) { cout << "Пользователь удалён." << endl; }
+				int perm = model.GetPermission(login, otherUser, false);
+				if (perm & 1) {
+					if (model.DeleteUser(otherUser)) { cout << "Пользователь удалён." << endl; }
+				}
+				else {
+					cout << "Недостаточно прав." << endl;
+				}	
 			} 
 			else {
 				cout << "Пользователь не найден." << endl;

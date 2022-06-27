@@ -93,16 +93,19 @@ int ModelHRU::GetSizeUsers()
     return this->users.size();
 }
 
-int ModelHRU::GetPermission(string login, string file)
+int ModelHRU::GetPermission(string login, string file, bool isFile)
 {
-    int i, j;
-    vector<string>::iterator it = find(files.begin(), files.end(), file);
+    int i = 0, j;
 
-    if (it == files.end()) {
-        return -1;
+    if (isFile) {
+        vector<string>::iterator it = find(files.begin(), files.end(), file);
+        i = distance(files.begin(), it) + users.size();
     }
-
-    i = distance(files.begin(), it);
+    else {
+        auto it = find_if(users.begin(), users.end(), [file](pair<string, string>& current) { return current.first == file; });
+        i = distance(users.begin(), it);
+    }
+    
 
     auto it1 = find_if(users.begin(), users.end(), [login](pair<string, string>& current) { return current.first == login; });
     j = distance(users.begin(), it1);
@@ -110,15 +113,22 @@ int ModelHRU::GetPermission(string login, string file)
     return accessMatrix[i][j];
 }
 
-int ModelHRU::SetPermission(string login, string file, string flag)
+int ModelHRU::SetPermission(string login, string file, string flag, bool isFile)
 {
     if (flag != "r" && flag != "w" && flag != "o") {
         return 0;
     }
 
-    int i, j;
-    vector<string>::iterator it = find(files.begin(), files.end(), file);
-    i = distance(files.begin(), it);
+    int i = 0, j;
+
+    if (isFile) {
+        vector<string>::iterator it = find(files.begin(), files.end(), file);
+        i = distance(files.begin(), it) + users.size();
+    }
+    else {
+        auto it = find_if(users.begin(), users.end(), [file](pair<string, string>& current) { return current.first == file; });
+        i = distance(users.begin(), it);
+    }
 
     auto it1 = find_if(users.begin(), users.end(), [login](pair<string, string>& current) { return current.first == login; });
     j = distance(users.begin(), it1);
@@ -140,15 +150,22 @@ int ModelHRU::SetPermission(string login, string file, string flag)
     return 1;
 }
 
-int ModelHRU::DelPermission(string login, string file, string flag)
+int ModelHRU::DelPermission(string login, string file, string flag, bool isFile)
 {
     if (flag != "r" && flag != "w" && flag != "o") {
         return 0;
     }
 
-    int i, j;
-    vector<string>::iterator it = find(files.begin(), files.end(), file);
-    i = distance(files.begin(), it);
+    int i = 0, j;
+
+    if (isFile) {
+        vector<string>::iterator it = find(files.begin(), files.end(), file);
+        i = distance(files.begin(), it) + users.size();
+    }
+    else {
+        auto it = find_if(users.begin(), users.end(), [file](pair<string, string>& current) { return current.first == file; });
+        i = distance(users.begin(), it);
+    }
 
     auto it1 = find_if(users.begin(), users.end(), [login](pair<string, string>& current) { return current.first == login; });
     j = distance(users.begin(), it1);
@@ -181,7 +198,16 @@ int ModelHRU::CreateUser(string login, string password)
         return 0;
     }
     
-    vector<vector<int>>::iterator it1;
+    int n = users.size() - 1;
+
+    vector<vector<int>>::iterator it1 = accessMatrix.begin();
+    if (it1 != accessMatrix.end()) {
+        accessMatrix.insert((it1 + n), vector<int>(n, 0));
+    }
+    else {
+        accessMatrix.insert((it1), vector<int>(n, 0));
+    }
+
     for (it1 = accessMatrix.begin(); it1 != accessMatrix.end(); it1++) {
         (* it1).push_back(0);
     }
@@ -195,6 +221,8 @@ int ModelHRU::DeleteUser(string login)
     auto it = find_if(users.begin(), users.end(), [login](pair<string, string>& current) { return current.first == login; });
     j = distance(users.begin(), it);
     users.erase(it);
+
+    accessMatrix.erase(accessMatrix.begin() + j);
 
     for (int i = 0; i < accessMatrix.size(); i++) {
         accessMatrix[i].erase(accessMatrix[i].begin() + j);
@@ -250,8 +278,10 @@ int ModelHRU::DeleteFile(string name)
 {
     int i;
     vector<string>::iterator it = find(files.begin(), files.end(), name);
-    i = distance(files.begin(), it);
+    i = distance(files.begin(), it) + users.size();
     files.erase(it);
+    name = "model/" + name;
+    remove(name.c_str());
     accessMatrix.erase(accessMatrix.begin() + i);
 
     return 1;
@@ -283,8 +313,19 @@ void ModelHRU::ReadFile(string name)
 
 int ModelHRU::CheckUser(string login)
 {
-    auto it1 = find_if(users.begin(), users.end(), [login](pair<string, string>& current) { return current.first == login; });
-    if (it1 != users.end()) {
+    auto it = find_if(users.begin(), users.end(), [login](pair<string, string>& current) { return current.first == login; });
+    if (it != users.end()) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+int ModelHRU::CheckFile(string file)
+{
+    vector<string>::iterator it = find(files.begin(), files.end(), file);
+    if (it != files.end()) {
         return 1;
     }
     else {

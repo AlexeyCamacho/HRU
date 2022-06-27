@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <direct.h>
+#include <cstdio>
 #include "MD5.h"
 #include "Function.h"
 
@@ -19,9 +20,9 @@ public:
 	ModelHRU();
 	void save();
 	int GetSizeUsers();
-	int GetPermission(string login, string file);
-	int SetPermission(string login, string file, string flag);
-	int DelPermission(string login, string file, string flag);
+	int GetPermission(string login, string file, bool isFile);
+	int SetPermission(string login, string file, string flag, bool isFile);
+	int DelPermission(string login, string file, string flag, bool isFile);
 	int CreateUser(string login, string password);
 	int DeleteUser(string login);
 	string Authentication();
@@ -30,5 +31,6 @@ public:
 	int WriteFile(string name, string text);
 	void ReadFile(string name);
 	int CheckUser(string login);
+	int CheckFile(string file);
 };
 
